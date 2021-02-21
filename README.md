@@ -1,2 +1,2 @@
-# manim
+# Manim
 Manim animations
