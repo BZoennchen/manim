@@ -2,7 +2,7 @@ from manim import *
 import numpy as np
 
 
-class TriScene(Scene):
+class TrigScene(Scene):
     def __init__(self,
                  x_min=-0.5,
                  x_max=np.pi * 2 + 0.5,
@@ -16,12 +16,16 @@ class TriScene(Scene):
                      MathTex("-1"), MathTex("1")],
                  x_axis_scale=1.5,
                  y_axis_scale=2,
+                 axis_color=GRAY,
+                 tick_labels_color=WHITE,
                  ** kwargs):
         super().__init__(**kwargs)
         self.x_min = x_min
         self.x_max = x_max
         self.y_min = y_min
         self.y_max = y_max
+        self.axis_color = axis_color
+        self.tick_labels_color = tick_labels_color
         self.x_ticks = x_ticks
         self.x_tick_labels = x_tick_labels
         self.y_ticks = y_ticks
@@ -30,9 +34,7 @@ class TriScene(Scene):
         self.x_axis_scale = x_axis_scale
         self.y_axis_scale = y_axis_scale
         self.origin_point = np.array(
-            [-(self.x_max-self.x_min) / 2.0 * self.x_axis_scale, 0, 0])
-        self.curve_start = np.array(
-            [0, (self.y_max-self.y_min) / 2.0 * self.y_axis_scale, 0])
+            [-(self.x_max-self.x_min) / 2.0 * self.x_axis_scale, -0.5, 0])
         self.graph = VGroup()
 
     def show_axis(self, animate=False):
@@ -44,6 +46,8 @@ class TriScene(Scene):
 
         x_axis = Line(x_start, x_end)
         y_axis = Line(y_start, y_end)
+        x_axis.set_color(self.axis_color)
+        y_axis.set_color(self.axis_color)
 
         #x_axis.shift(self.origin_point * 0.5)
         x_axis.move_to(self.origin_point + x_axis.get_center())
@@ -64,6 +68,7 @@ class TriScene(Scene):
     def add_x_ticks(self):
         height = 0.15
         line = Line(np.array([0, -height, 0]), np.array([0, height, 0]))
+        line.set_color(self.axis_color)
 
         for i in range(len(self.x_ticks)):
             copy = line.copy()
@@ -75,6 +80,7 @@ class TriScene(Scene):
     def add_y_ticks(self):
         width = 0.15
         line = Line(np.array([-width, 0, 0]), np.array([width, 0, 0]))
+        line.set_color(self.axis_color)
 
         for i in range(len(self.y_ticks)):
             copy = line.copy()
@@ -87,14 +93,14 @@ class TriScene(Scene):
         for i in range(len(self.x_tick_labels)):
             self.x_tick_labels[i].next_to(
                 self.origin_point + np.array([self.x_ticks[i] * self.x_axis_scale, 0, 0]), DOWN)
-            # self.add(self.x_tick_labels[i])
+            self.x_tick_labels[i].set_color(self.tick_labels_color)
             self.graph.add(self.x_tick_labels[i])
 
     def add_y_labels(self):
         for i in range(len(self.y_tick_labels)):
             self.y_tick_labels[i].next_to(
                 self.origin_point + np.array([0, self.y_ticks[i] * self.y_axis_scale, 0]), LEFT)
-            # self.add(self.y_tick_labels[i])
+            self.y_tick_labels[i].set_color(self.tick_labels_color)
             self.graph.add(self.y_tick_labels[i])
 
     def get_graph(self, func, color=None, x_min=None, x_max=None, **kwargs):
